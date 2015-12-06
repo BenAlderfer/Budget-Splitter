@@ -18,14 +18,40 @@ import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 
+/**
+ * Main window of the Budget Splitter
+ *
+ * @author Ben Alderfer
+ * Alderfer Studios
+ */
 public class MainActivity extends AppCompatActivity {
 
-    private String day;
+    /**
+     * The number corresponding to the number of days
+     * Since the number is calculated at the end of the week,
+     * This number is how many days to add back
+     */
+    private int day = 7; //monday by default
+
+    /** The results TextViews */
     private TextView initialResultsHeader, initialResultsText, currentResultsHeader, currentResultsText;
+
+    /** The EditText fields */
     private EditText initalBalanceEditText, numWeeksEditText, currentWeekEditText, currentBalanceEditText;
+
+    /** The text input in the fields */
     private String initalBalance, numWeeks, currentWeek, currentBalance;
+
+    /** Whether the fields have been entered */
     private boolean initialBalanceIsEntered, numWeeksIsEntered, currentWeeksIsEntered, currentBalanceIsEntered;
 
+    /**
+     * Sets up the toolbar
+     * Saves the Views for later
+     * Hides the results headers
+     * Adds listeners to the fields and buttons
+     * @param savedInstanceState - the previous state (not used)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,12 +77,22 @@ public class MainActivity extends AppCompatActivity {
         addButtonListeners();
     }
 
+    /**
+     * Sets up the menu (none for now)
+     * @param menu - the menu to set up
+     * @return true (useless)
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
+    /**
+     * Handles menu option clicks
+     * @param item - the MenuItem that was clicked
+     * @return either true or handed off to super class (useless)
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -81,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 initalBalance = initalBalanceEditText.getText().toString();
+                //if it ends with a "." remove the "." before getting the number
+                if (initalBalance.length() > 0 && initalBalance.substring(initalBalance.length() - 1, initalBalance.length()).equals(".")) {
+                    initalBalance = initalBalance.substring(0, initalBalance.length());
+                }
                 initialBalanceIsEntered = !initalBalance.equals("");
                 attemptUpdate();
             }
@@ -111,9 +151,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 currentBalance = currentBalanceEditText.getText().toString();
+                //if it ends with a "." remove the "." before getting the number
+                if (currentBalance.length() > 0 && currentBalance.substring(currentBalance.length() - 1, currentBalance.length()).equals(".")) {
+                    currentBalance = currentBalance.substring(0, currentBalance.length());
+                }
                 //if current balance > initial, fix that
                 if (!initalBalance.equals("") && !currentBalance.equals("") &&
-                    Integer.parseInt(currentBalance) > Integer.parseInt(initalBalance)) {
+                    Double.parseDouble(currentBalance) > Double.parseDouble(initalBalance)) {
                     currentBalance = initalBalance;
                     currentBalanceEditText.setText(currentBalance);
                 }
@@ -127,14 +171,15 @@ public class MainActivity extends AppCompatActivity {
 
         currentWeekEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 currentWeek = currentWeekEditText.getText().toString();
                 //if current week > num weeks, fix that
                 if (!numWeeks.equals("") && !currentWeek.equals("") &&
-                    Integer.parseInt(currentWeek) > Integer.parseInt(numWeeks)) {
+                        Integer.parseInt(currentWeek) > Integer.parseInt(numWeeks)) {
                     currentWeek = numWeeks;
                     currentWeekEditText.setText(currentWeek);
                 }
@@ -143,13 +188,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
     /**
      * Adds a listener to the radio group
-     * Updates the current day
+     * Updates the current day to the corresponding number
      */
     private void addButtonListeners() {
         final RadioGroup  radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
@@ -158,27 +204,28 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (radioGroup.getCheckedRadioButtonId()) {
                     case R.id.mondayButton:
-                        day = "Monday";
+                        day = 7;
                         break;
                     case R.id.tuesdayButton:
-                        day = "Tuesday";
+                        day = 6;
                         break;
                     case R.id.wednesdayButton:
-                        day = "Wednesday";
+                        day = 5;
                         break;
                     case R.id.thursdayButton:
-                        day = "Thursday";
+                        day = 4;
                         break;
                     case R.id.fridayButton:
-                        day = "Friday";
+                        day = 3;
                         break;
                     case R.id.saturdayButton:
-                        day = "Saturday";
+                        day = 2;
                         break;
                     case R.id.sundayButton:
-                        day = "Sunday";
+                        day = 1;
                         break;
                 }
+                attemptUpdate();
             }
         });
     }
@@ -230,8 +277,17 @@ public class MainActivity extends AppCompatActivity {
             double curBalance = Double.parseDouble(currentBalance);
             int curWeeks = Integer.parseInt(currentWeek);
 
-            double diff = curBalance - (initial - weekly * curWeeks);
-            double currentWeekly = curBalance / (weeks - curWeeks);
+            // current balance - amount that should be spent + number of remaining days in the week * daily rate
+            double diff = curBalance - (initial - weekly * curWeeks + day * daily);
+
+            int weekDiff = weeks - curWeeks;
+            double currentWeekly;
+            if (weekDiff > 0) {
+                currentWeekly = curBalance / (weekDiff + day / 7.0);
+            } else {
+                currentWeekly = curBalance;
+            }
+
             double currentDaily = currentWeekly / 7;
 
             currentResults += getString(R.string.difference) + " ";

@@ -103,7 +103,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/monday"
-                android:id="@+id/mondayButton" />
+                android:id="@+id/mondayButton"
+                android:checked="true"/>
 
             <RadioButton
                 android:layout_width="0dp"
