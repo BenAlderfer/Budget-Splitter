@@ -2,7 +2,11 @@
 <resources>
 	
 	<style name="Text">
-         <item name="android:textSize">25sp</item>
+         <item name="android:textSize">20sp</item>
+    </style>
+	
+	<style name="SmallHeader">
+         <item name="android:textSize">15sp</item>
     </style>
 	
 	<!-- Default screen margins, per the Android Design guidelines. -->

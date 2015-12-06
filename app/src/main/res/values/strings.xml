@@ -3,16 +3,16 @@
     <string name="action_settings">Settings</string>
 	
 	<string name="initialBalance">Initial Balance</string>
-    <string name="totalWeeks">Total number of weeks</string>
-	<string name="weekNum">Week Number</string>
+    <string name="totalWeeks">Total Number of Weeks</string>
 	<string name="currentBalance">Current Balance</string>
+	<string name="weekNum">Current Week Number</string>
 	
-	<string name="daily">Initial Daily Limit: </string>
-    <string name="weekly">Initial Weekly Limit: </string>
+	<string name="initialHeader"><u>Initially:</u></string>
+	<string name="currentHeader"><u>Currently:</u></string>
 	
-	<string name="difference">Current Difference: </string>
-	<string name="currentDaily">Current Daily Limit: </string>
-    <string name="currentWeekly">Current Weekly Limit: </string>
+	<string name="daily">Daily Limit: </string>
+    <string name="weekly">Weekly Limit: </string>
+	<string name="difference">Difference: </string>
 	
 	<string name="monday">M</string>
 	<string name="tuesday">Tu</string>

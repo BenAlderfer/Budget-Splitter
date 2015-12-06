@@ -14,11 +14,14 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
     private String day;
+    private TextView initialResultsText, currentResultsText;
     private EditText initalBalanceEditText, numWeeksEditText, currentWeekEditText, currentBalanceEditText;
     private String initalBalance, numWeeks, currentWeek, currentBalance;
     private boolean initialBalanceIsEntered, numWeeksIsEntered, currentWeeksIsEntered, currentBalanceIsEntered;
@@ -35,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         numWeeksEditText = (EditText) findViewById(R.id.numWeeksText);
         currentWeekEditText = (EditText) findViewById(R.id.currentWeekText);
         currentBalanceEditText = (EditText) findViewById(R.id.currentBalanceText);
+
+        initialResultsText = (TextView) findViewById(R.id.initalText);
+        currentResultsText = (TextView) findViewById(R.id.currentText);
 
         addTextListeners();
         addButtonListeners();
@@ -70,13 +76,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 initalBalance = initalBalanceEditText.getText().toString();
-                if (!initalBalance.equals("")) {
-                    initialBalanceIsEntered = true;
-                    if (canUpdateResults()) {
-                        updateResults();
-                    }
+                initialBalanceIsEntered = !initalBalance.equals("");
+                if (canUpdateResults()) {
+                    updateResults();
                 } else {
-                    initialBalanceIsEntered = false;
+                    clearResults();
                 }
             }
 
@@ -91,34 +95,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 numWeeks = numWeeksEditText.getText().toString();
-                if (!numWeeks.equals("")) {
-                    numWeeksIsEntered = true;
-                    if (canUpdateResults()) {
-                        updateResults();
-                    }
+                numWeeksIsEntered = !numWeeks.equals("");
+                if (canUpdateResults()) {
+                    updateResults();
                 } else {
-                    numWeeksIsEntered = false;
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        currentWeekEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                currentWeek = currentWeekEditText.getText().toString();
-                if (!currentWeek.equals("")) {
-                    currentWeeksIsEntered = true;
-                    if (canUpdateResults()) {
-                        updateResults();
-                    }
-                } else {
-                    currentWeeksIsEntered = false;
+                    clearResults();
                 }
             }
 
@@ -133,13 +114,42 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 currentBalance = currentBalanceEditText.getText().toString();
-                if (!currentBalance.equals("")) {
-                    currentBalanceIsEntered = true;
-                    if (canUpdateResults()) {
-                        updateResults();
-                    }
+                //if current balance > initial, fix that
+                if (!initalBalance.equals("") && !currentBalance.equals("") &&
+                    Integer.parseInt(currentBalance) > Integer.parseInt(initalBalance)) {
+                    currentBalance = initalBalance;
+                    currentBalanceEditText.setText(currentBalance);
+                }
+                currentBalanceIsEntered = !currentBalance.equals("");
+                if (canUpdateResults()) {
+                    updateResults();
                 } else {
-                    currentBalanceIsEntered = false;
+                    clearResults();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        currentWeekEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                currentWeek = currentWeekEditText.getText().toString();
+                //if current week > num weeks, fix that
+                if (!numWeeks.equals("") && !currentWeek.equals("") &&
+                    Integer.parseInt(currentWeek) > Integer.parseInt(numWeeks)) {
+                    currentWeek = numWeeks;
+                    currentWeekEditText.setText(currentWeek);
+                }
+                currentWeeksIsEntered = !currentWeek.equals("");
+                if (canUpdateResults()) {
+                    updateResults();
+                } else {
+                    clearResults();
                 }
             }
 
@@ -197,16 +207,19 @@ public class MainActivity extends AppCompatActivity {
      * Updates the results text
      */
     private void updateResults() {
-        String results = "";
+        String initialResults = "";
         DecimalFormat twoDecimal = new DecimalFormat("#.00");
         double initial = Double.parseDouble(initalBalance);
         int weeks = Integer.parseInt(numWeeks);
 
         double weekly = initial / weeks;
         double daily = weekly / 7;
-        results += getString(R.string.daily) + " " + twoDecimal.format(daily) + '\n' +
+        initialResults += getString(R.string.daily) + " " + twoDecimal.format(daily) + '\n' +
                    getString(R.string.weekly) + " " + twoDecimal.format(weekly);
 
+        initialResultsText.setText(initialResults);
+
+        String currentResults = "";
         if (currentWeeksIsEntered && currentBalanceIsEntered) {
             double curBalance = Double.parseDouble(currentBalance);
             int curWeeks = Integer.parseInt(currentWeek);
@@ -215,18 +228,26 @@ public class MainActivity extends AppCompatActivity {
             double currentWeekly = curBalance / (weeks - curWeeks);
             double currentDaily = currentWeekly / 7;
 
-            results += "\n\n" + getString(R.string.difference) + " ";
+            currentResults += getString(R.string.difference) + " ";
 
             if (diff > 0) {
-                results += "+" + twoDecimal.format(diff);
+                currentResults += "+" + twoDecimal.format(diff);
             } else {
-                results += twoDecimal.format(diff);
+                currentResults += twoDecimal.format(diff);
             }
 
-            results += '\n' + getString(R.string.currentDaily) + " " + twoDecimal.format(currentDaily) + '\n' +
-                       getString(R.string.currentWeekly) + " " + twoDecimal.format(currentWeekly);
+            currentResults += '\n' + getString(R.string.daily) + " " + twoDecimal.format(currentDaily) + '\n' +
+                       getString(R.string.weekly) + " " + twoDecimal.format(currentWeekly);
         }
 
-        ((TextView) findViewById(R.id.results)).setText(results);
+        currentResultsText.setText(currentResults);
+    }
+
+    /**
+     * If the results cannot be updated, then nothing should be displayed
+     */
+    private void clearResults() {
+        initialResultsText.setText("");
+        currentResultsText.setText("");
     }
 }
