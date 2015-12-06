@@ -206,13 +206,12 @@ public class MainActivity extends AppCompatActivity {
         double daily = weekly / 7;
         results += getString(R.string.daily) + " " + twoDecimal.format(daily) + '\n' +
                    getString(R.string.weekly) + " " + twoDecimal.format(weekly);
-        System.err.println("weekly: " + weekly);
 
         if (currentWeeksIsEntered && currentBalanceIsEntered) {
             double curBalance = Double.parseDouble(currentBalance);
             int curWeeks = Integer.parseInt(currentWeek);
 
-            double diff = curBalance - weekly * curWeeks;
+            double diff = curBalance - (initial - weekly * curWeeks);
             double currentWeekly = curBalance / (weeks - curWeeks);
             double currentDaily = currentWeekly / 7;
 
