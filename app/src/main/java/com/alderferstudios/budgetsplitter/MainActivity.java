@@ -21,7 +21,7 @@ import java.text.DecimalFormat;
 public class MainActivity extends AppCompatActivity {
 
     private String day;
-    private TextView initialResultsText, currentResultsText;
+    private TextView initialResultsHeader, initialResultsText, currentResultsHeader, currentResultsText;
     private EditText initalBalanceEditText, numWeeksEditText, currentWeekEditText, currentBalanceEditText;
     private String initalBalance, numWeeks, currentWeek, currentBalance;
     private boolean initialBalanceIsEntered, numWeeksIsEntered, currentWeeksIsEntered, currentBalanceIsEntered;
@@ -39,8 +39,13 @@ public class MainActivity extends AppCompatActivity {
         currentWeekEditText = (EditText) findViewById(R.id.currentWeekText);
         currentBalanceEditText = (EditText) findViewById(R.id.currentBalanceText);
 
+        initialResultsHeader = (TextView) findViewById(R.id.initalHeader);
         initialResultsText = (TextView) findViewById(R.id.initalText);
+        currentResultsHeader = (TextView) findViewById(R.id.currentHeader);
         currentResultsText = (TextView) findViewById(R.id.currentText);
+
+        initialResultsHeader.setVisibility(View.INVISIBLE);
+        currentResultsHeader.setVisibility(View.INVISIBLE);
 
         addTextListeners();
         addButtonListeners();
@@ -77,11 +82,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 initalBalance = initalBalanceEditText.getText().toString();
                 initialBalanceIsEntered = !initalBalance.equals("");
-                if (canUpdateResults()) {
-                    updateResults();
-                } else {
-                    clearResults();
-                }
+                attemptUpdate();
             }
 
             @Override
@@ -96,11 +97,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 numWeeks = numWeeksEditText.getText().toString();
                 numWeeksIsEntered = !numWeeks.equals("");
-                if (canUpdateResults()) {
-                    updateResults();
-                } else {
-                    clearResults();
-                }
+                attemptUpdate();
             }
 
             @Override
@@ -121,11 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     currentBalanceEditText.setText(currentBalance);
                 }
                 currentBalanceIsEntered = !currentBalance.equals("");
-                if (canUpdateResults()) {
-                    updateResults();
-                } else {
-                    clearResults();
-                }
+                attemptUpdate();
             }
 
             @Override
@@ -146,11 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     currentWeekEditText.setText(currentWeek);
                 }
                 currentWeeksIsEntered = !currentWeek.equals("");
-                if (canUpdateResults()) {
-                    updateResults();
-                } else {
-                    clearResults();
-                }
+                attemptUpdate();
             }
 
             @Override
@@ -195,6 +184,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Checks if results can be updated
+     * If possible, update
+     * If not, clear results
+     */
+    private void attemptUpdate() {
+        if (canUpdateResults()) {
+            updateResults();
+        } else {
+            clearResults();
+        }
+    }
+
+    /**
      * Checks if the results can be updated
      * Only the first 2 are necessary
      * @return true if the initial balance and number of weeks have been entered
@@ -207,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
      * Updates the results text
      */
     private void updateResults() {
+        initialResultsHeader.setVisibility(View.VISIBLE);
+
         String initialResults = "";
         DecimalFormat twoDecimal = new DecimalFormat("#.00");
         double initial = Double.parseDouble(initalBalance);
@@ -221,6 +225,8 @@ public class MainActivity extends AppCompatActivity {
 
         String currentResults = "";
         if (currentWeeksIsEntered && currentBalanceIsEntered) {
+            currentResultsHeader.setVisibility(View.VISIBLE);
+
             double curBalance = Double.parseDouble(currentBalance);
             int curWeeks = Integer.parseInt(currentWeek);
 
@@ -247,6 +253,8 @@ public class MainActivity extends AppCompatActivity {
      * If the results cannot be updated, then nothing should be displayed
      */
     private void clearResults() {
+        initialResultsHeader.setVisibility(View.INVISIBLE);
+        currentResultsHeader.setVisibility(View.INVISIBLE);
         initialResultsText.setText("");
         currentResultsText.setText("");
     }
