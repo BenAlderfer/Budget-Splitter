@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Budget Splitter</string>
+    <string name="action_settings">Settings</string>
+	
+	<string name="initialBalance">Initial Balance</string>
+    <string name="totalWeeks">Total number of weeks</string>
+	<string name="weekNum">Week Number</string>
+	<string name="currentBalance">Current Balance</string>
+	
+	<string name="daily">Initial Daily Limit: </string>
+    <string name="weekly">Initial Weekly Limit: </string>
+	
+	<string name="difference">Current Difference: </string>
+	<string name="currentDaily">Current Daily Limit: </string>
+    <string name="currentWeekly">Current Weekly Limit: </string>
+	
+	<string name="monday">M</string>
+	<string name="tuesday">Tu</string>
+    <string name="wednesday">W</string>
+	<string name="thursday">Th</string>
+	<string name="friday">F</string>
+    <string name="saturday">Sa</string>
+	<string name="sunday">Su</string>
+</resources>
