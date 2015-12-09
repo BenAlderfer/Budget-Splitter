@@ -30,7 +30,8 @@
 
 	<color name="bluePrimary">#4285F4</color>
 	<color name="bluePrimaryDark">#3367D6</color>
-
+	<color name="blueHighlight">#90CAF9</color>
+	
 	<color name="blackPrimary">#ff212121</color>
 	<color name="blackPrimaryDark">#ff000000</color>
 	

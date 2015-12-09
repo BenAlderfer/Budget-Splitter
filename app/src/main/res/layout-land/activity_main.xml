@@ -13,22 +13,24 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/BlueLight" />
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/toolbar"
+        android:weightSum="10">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:elevation="4dip">
 
             <RelativeLayout
                 android:id="@+id/inputSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/white_shape"
-                android:elevation="4dip">
+                android:background="@drawable/white_shape">
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/initialBalance"
@@ -196,52 +198,53 @@
 
             </RelativeLayout>
 
-            <LinearLayout
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:background="@drawable/blue_shape"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/initalHeader"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/blue_shape"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/initialHeader"
+                style="@style/SmallHeader"/>
 
-                <TextView
-                    android:id="@+id/initalHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="@string/initialHeader"
-                    style="@style/SmallHeader"/>
+            <TextView
+                android:id="@+id/initalText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                style="@style/Text"/>
 
-                <TextView
-                    android:id="@+id/initalText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    style="@style/Text"/>
+            <TextView
+                android:id="@+id/spacer"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacer"/>
 
-                <TextView
-                    android:id="@+id/spacer"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spacer"/>
+            <TextView
+                android:id="@+id/currentHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/currentHeader"
+                style="@style/SmallHeader"/>
 
-                <TextView
-                    android:id="@+id/currentHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="@string/currentHeader"
-                    style="@style/SmallHeader"/>
-
-                <TextView
-                    android:id="@+id/currentText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    style="@style/Text"/>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/currentText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                style="@style/Text"/>
 
         </LinearLayout>
 
-    </ScrollView>
+    </LinearLayout>
 
 </RelativeLayout>

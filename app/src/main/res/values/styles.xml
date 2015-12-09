@@ -18,6 +18,9 @@
 		<item name="android:windowBackground">@color/bluePrimary </item> <!-- background color -->
 		<item name="android:textColor">@color/white</item> <!-- TextView color -->
 		<item name="android:actionMenuTextColor">@color/white</item>  <!-- Action button color -->
+		<item name="android:textColorHighlight">@color/blueHighlight</item>  <!--  Highlight color -->
+		<item name="colorControlActivated">@color/bluePrimary</item> <!-- Pressed Radio Button -->
+		<item name="colorControlNormal">@color/bluePrimary</item> <!-- Unpressed Radio Button -->
 	</style>
 	
 	<style name="blueEditText" parent="@android:style/Widget.EditText">
@@ -30,6 +33,11 @@
 		<item name="colorControlNormal">@color/bluePrimary</item>
 		<item name="colorControlActivated">@color/bluePrimary</item>
 		<item name="android:textSize">20sp</item>
+	</style>
+	
+	<style name="RadioButton" parent="@android:style/Widget.CompoundButton.RadioButton">
+		<item name="android:textSize">15sp</item>
+		<item name="android:buttonTint">@color/bluePrimary</item>
 	</style>
 
 </resources>

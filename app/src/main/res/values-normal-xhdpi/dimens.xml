@@ -2,14 +2,12 @@
 <resources>
 	
 	<style name="Text">
-         <item name="android:textSize">20sp</item>
-    </style>
-	
-	<style name="SmallHeader">
          <item name="android:textSize">15sp</item>
     </style>
 	
-	<dimen name="spacer">20dp</dimen>
+	<style name="SmallHeader">
+         <item name="android:textSize">10sp</item>
+    </style>
 	
 	<!-- Default screen margins, per the Android Design guidelines. -->
 	<dimen name="activity_horizontal_margin">16dp</dimen>

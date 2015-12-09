@@ -1,0 +1,8 @@
+<resources>
+	
+	<style name="RadioButton" parent="@android:style/Widget.CompoundButton.RadioButton">
+		<item name="android:textSize">15sp</item>
+		<item name="android:buttonTint">@color/bluePrimary</item>
+	</style>
+
+</resources>
