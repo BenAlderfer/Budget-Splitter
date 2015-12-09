@@ -15,15 +15,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
         android:layout_below="@id/toolbar"
-        android:weightSum="10">
+        android:weightSum="2">
 
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="6"
+            android:layout_weight="1"
             android:elevation="4dip">
 
             <RelativeLayout
@@ -45,12 +45,13 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/bluePrimary"
                         android:hint="@string/initialBalance"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        android:layout_marginRight="@dimen/activity_horizontal_margin"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginLeft="@dimen/small_horizontal_margin"
+                        android:layout_marginStart="@dimen/small_horizontal_margin"
+                        android:layout_marginRight="@dimen/small_horizontal_margin"
+                        android:layout_marginEnd="@dimen/small_horizontal_margin"
                         android:layout_marginBottom="@dimen/activity_vertical_margin"
                         android:inputType="numberDecimal"
+                        android:textColorHighlight="@color/blueHighlight"
                         style="@style/Text"/>
 
                 </android.support.design.widget.TextInputLayout>
@@ -68,12 +69,13 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/bluePrimary"
                         android:hint="@string/totalWeeks"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        android:layout_marginRight="@dimen/activity_horizontal_margin"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginLeft="@dimen/small_horizontal_margin"
+                        android:layout_marginStart="@dimen/small_horizontal_margin"
+                        android:layout_marginRight="@dimen/small_horizontal_margin"
+                        android:layout_marginEnd="@dimen/small_horizontal_margin"
                         android:layout_marginBottom="@dimen/activity_vertical_margin"
                         android:inputType="number"
+                        android:textColorHighlight="@color/blueHighlight"
                         style="@style/Text"/>
 
                 </android.support.design.widget.TextInputLayout>
@@ -91,12 +93,13 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/bluePrimary"
                         android:hint="@string/currentBalance"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        android:layout_marginRight="@dimen/activity_horizontal_margin"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginLeft="@dimen/small_horizontal_margin"
+                        android:layout_marginStart="@dimen/small_horizontal_margin"
+                        android:layout_marginRight="@dimen/small_horizontal_margin"
+                        android:layout_marginEnd="@dimen/small_horizontal_margin"
                         android:layout_marginBottom="@dimen/activity_vertical_margin"
                         android:inputType="numberDecimal"
+                        android:textColorHighlight="@color/blueHighlight"
                         style="@style/Text"/>
 
                 </android.support.design.widget.TextInputLayout>
@@ -114,12 +117,13 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/bluePrimary"
                         android:hint="@string/weekNum"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        android:layout_marginRight="@dimen/activity_horizontal_margin"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:layout_marginLeft="@dimen/small_horizontal_margin"
+                        android:layout_marginStart="@dimen/small_horizontal_margin"
+                        android:layout_marginRight="@dimen/small_horizontal_margin"
+                        android:layout_marginEnd="@dimen/small_horizontal_margin"
                         android:layout_marginBottom="@dimen/activity_vertical_margin"
                         android:inputType="number"
+                        android:textColorHighlight="@color/blueHighlight"
                         style="@style/Text"/>
 
                 </android.support.design.widget.TextInputLayout>
@@ -130,10 +134,10 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_below="@id/currentWeek"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginLeft="@dimen/small_horizontal_margin"
+                    android:layout_marginStart="@dimen/small_horizontal_margin"
+                    android:layout_marginRight="@dimen/small_horizontal_margin"
+                    android:layout_marginEnd="@dimen/small_horizontal_margin"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:weightSum="7">
 
@@ -196,54 +200,80 @@
 
                 </RadioGroup>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/radioGroup"/>
+
             </RelativeLayout>
 
         </ScrollView>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:background="@drawable/blue_shape"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:orientation="vertical">
+            android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/initalHeader"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="@string/initialHeader"
-                style="@style/SmallHeader"/>
+                android:layout_height="match_parent"
+                android:background="@drawable/blue_shape"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/initalText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                style="@style/Text"/>
+                <TextView
+                    android:id="@+id/initalHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:textColor="@color/white"
+                    android:text="@string/initialHeader"
+                    style="@style/SmallHeader"/>
 
-            <TextView
-                android:id="@+id/spacer"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spacer"/>
+                <TextView
+                    android:id="@+id/initalText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:textColor="@color/white"
+                    style="@style/Text"/>
 
-            <TextView
-                android:id="@+id/currentHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="@string/currentHeader"
-                style="@style/SmallHeader"/>
+                <TextView
+                    android:id="@+id/spacer"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spacer"/>
 
-            <TextView
-                android:id="@+id/currentText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                style="@style/Text"/>
+                <TextView
+                    android:id="@+id/currentHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:textColor="@color/white"
+                    android:text="@string/currentHeader"
+                    style="@style/SmallHeader"/>
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/currentText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:textColor="@color/white"
+                    style="@style/Text"/>
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </LinearLayout>
 

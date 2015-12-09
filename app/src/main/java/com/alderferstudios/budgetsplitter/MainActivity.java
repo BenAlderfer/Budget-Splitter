@@ -1,6 +1,8 @@
 package com.alderferstudios.budgetsplitter;
 
+import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -59,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        if (!isTablet(this)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        }
 
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar);
         bar.setTitle(R.string.app_name);
@@ -263,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
         initialResultsHeader.setVisibility(View.VISIBLE);
 
         String initialResults = "";
-        DecimalFormat twoDecimal = new DecimalFormat("#.00");
+        DecimalFormat twoDecimal = new DecimalFormat("0.00");
         double initial = Double.parseDouble(initalBalance);
         int weeks = Integer.parseInt(numWeeks);
 
@@ -317,5 +321,17 @@ public class MainActivity extends AppCompatActivity {
         currentResultsHeader.setVisibility(View.INVISIBLE);
         initialResultsText.setText("");
         currentResultsText.setText("");
+    }
+
+    /**
+     * Checks if the device is a tablet
+     *
+     * @param context the Context
+     * @return true if a tablet
+     */
+    private static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 }
