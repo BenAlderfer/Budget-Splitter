@@ -23,5 +23,13 @@
 	<style name="blueEditText" parent="@android:style/Widget.EditText">
 		<item name="android:textColor">@color/bluePrimary</item>
 	</style>
+	
+	 <style name="TextLabel" parent="TextAppearance.AppCompat">
+		<item name="android:textColorHint">@color/grey</item> 
+		<item name="colorAccent">@color/bluePrimary</item>
+		<item name="colorControlNormal">@color/bluePrimary</item>
+		<item name="colorControlActivated">@color/bluePrimary</item>
+		<item name="android:textSize">20sp</item>
+	</style>
 
 </resources>
