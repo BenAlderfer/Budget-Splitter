@@ -1,5 +1,6 @@
 package com.alderferstudios.budgetsplitter;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar);
         bar.setTitle(R.string.app_name);
@@ -282,14 +285,14 @@ public class MainActivity extends AppCompatActivity {
             double diff = curBalance - (initial - weekly * curWeeks + day * daily);
 
             int weekDiff = weeks - curWeeks;
-            double currentWeekly;
+            double currentWeekly, currentDaily;
             if (weekDiff > 0) {
                 currentWeekly = curBalance / (weekDiff + day / 7.0);
+                currentDaily = currentWeekly / 7;
             } else {
                 currentWeekly = curBalance;
+                currentDaily = currentWeekly / day;
             }
-
-            double currentDaily = currentWeekly / 7;
 
             currentResults += getString(R.string.difference) + " ";
 
