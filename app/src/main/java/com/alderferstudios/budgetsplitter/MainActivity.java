@@ -37,8 +37,24 @@ public class MainActivity extends AppCompatActivity {
      */
     private int day = 7; //monday by default
 
-    /** The results TextViews */
-    private TextView initialResultsHeader, initialResultsText, currentResultsHeader, currentResultsText;
+    /**
+     * The results TextViews
+     *
+     * 0 - Initial Header
+     * 1 - Initial Daily Line Header
+     * 2 - Initial Daily
+     * 3 - Initial Weekly Line Header
+     * 4 - Initial Weekly
+     *
+     * 5 - Current Header
+     * 6 - Diff Line Header
+     * 7 - Diff
+     * 8 - Current Daily Line Header
+     * 9 - Current Daily
+     * 10 - Current Weekly Line Header
+     * 11 - Current Weekly
+     * */
+    private TextView[] tvs = new TextView[12];
 
     /** The EditText fields */
     private EditText initalBalanceEditText, numWeeksEditText, currentWeekEditText, currentBalanceEditText;
@@ -73,13 +89,21 @@ public class MainActivity extends AppCompatActivity {
         currentWeekEditText = (EditText) findViewById(R.id.currentWeekText);
         currentBalanceEditText = (EditText) findViewById(R.id.currentBalanceText);
 
-        initialResultsHeader = (TextView) findViewById(R.id.initalHeader);
-        initialResultsText = (TextView) findViewById(R.id.initalText);
-        currentResultsHeader = (TextView) findViewById(R.id.currentHeader);
-        currentResultsText = (TextView) findViewById(R.id.currentText);
+        tvs[0] = (TextView) findViewById(R.id.initialHeader);
+        tvs[1] = (TextView) findViewById(R.id.initDaily);
+        tvs[2] = (TextView) findViewById(R.id.initDailyText);
+        tvs[3] = (TextView) findViewById(R.id.initWeekly);
+        tvs[4] = (TextView) findViewById(R.id.initWeeklyText);
 
-        initialResultsHeader.setVisibility(View.INVISIBLE);
-        currentResultsHeader.setVisibility(View.INVISIBLE);
+        tvs[5] = (TextView) findViewById(R.id.currentHeader);
+        tvs[6] = (TextView) findViewById(R.id.diff);
+        tvs[7] = (TextView) findViewById(R.id.diffText);
+        tvs[8] = (TextView) findViewById(R.id.currentDaily);
+        tvs[9] = (TextView) findViewById(R.id.currentDailyText);
+        tvs[10] = (TextView) findViewById(R.id.currentWeekly);
+        tvs[11] = (TextView) findViewById(R.id.currentWeeklyText);
+
+        clearResults();
 
         addTextListeners();
         addButtonListeners();
@@ -264,23 +288,26 @@ public class MainActivity extends AppCompatActivity {
      * Updates the results text
      */
     private void updateResults() {
-        initialResultsHeader.setVisibility(View.VISIBLE);
+        /** Make the TextViews visible */
+        for (int i = 0; i <= 4; ++i) {
+            tvs[i].setVisibility(View.VISIBLE);
+        }
 
-        String initialResults = "";
         DecimalFormat twoDecimal = new DecimalFormat("0.00");
         double initial = Double.parseDouble(initalBalance);
         int weeks = Integer.parseInt(numWeeks);
 
         double weekly = initial / weeks;
         double daily = weekly / 7;
-        initialResults += getString(R.string.daily) + " " + twoDecimal.format(daily) + '\n' +
-                   getString(R.string.weekly) + " " + twoDecimal.format(weekly);
 
-        initialResultsText.setText(initialResults);
+        tvs[2].setText(twoDecimal.format(daily));
+        tvs[4].setText(twoDecimal.format(weekly));
 
-        String currentResults = "";
         if (currentWeeksIsEntered && currentBalanceIsEntered) {
-            currentResultsHeader.setVisibility(View.VISIBLE);
+            /** Make the TextViews visible */
+            for (int i = 5; i <= 11; ++i) {
+                tvs[i].setVisibility(View.VISIBLE);
+            }
 
             double curBalance = Double.parseDouble(currentBalance);
             int curWeeks = Integer.parseInt(currentWeek);
@@ -298,29 +325,25 @@ public class MainActivity extends AppCompatActivity {
                 currentDaily = currentWeekly / day;
             }
 
-            currentResults += getString(R.string.difference) + " ";
-
             if (diff > 0) {
-                currentResults += "+" + twoDecimal.format(diff);
+                tvs[7].setText("+" + twoDecimal.format(diff));
             } else {
-                currentResults += twoDecimal.format(diff);
+                tvs[7].setText(twoDecimal.format(diff));
             }
 
-            currentResults += '\n' + getString(R.string.daily) + " " + twoDecimal.format(currentDaily) + '\n' +
-                       getString(R.string.weekly) + " " + twoDecimal.format(currentWeekly);
+            tvs[9].setText(twoDecimal.format(currentDaily));
+            tvs[11].setText(twoDecimal.format(currentWeekly));
         }
-
-        currentResultsText.setText(currentResults);
     }
 
     /**
      * If the results cannot be updated, then nothing should be displayed
+     * Makes all TextViews invisible
      */
     private void clearResults() {
-        initialResultsHeader.setVisibility(View.INVISIBLE);
-        currentResultsHeader.setVisibility(View.INVISIBLE);
-        initialResultsText.setText("");
-        currentResultsText.setText("");
+        for (int i = 0; i <= 11; ++i) {
+            tvs[i].setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
