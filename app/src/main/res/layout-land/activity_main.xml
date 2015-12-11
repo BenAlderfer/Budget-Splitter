@@ -74,7 +74,8 @@
                             android:layout_marginEnd="@dimen/small_horizontal_margin"
                             android:inputType="numberDecimal"
                             android:maxLength="8"
-                            style="@style/Text"/>
+                            style="@style/Text"
+                            android:nextFocusDown="@+id/numWeeksText"/>
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -97,7 +98,8 @@
                             android:layout_marginEnd="@dimen/small_horizontal_margin"
                             android:inputType="number"
                             android:maxLength="4"
-                            style="@style/Text"/>
+                            style="@style/Text"
+                            android:nextFocusDown="@+id/currentBalanceText"/>
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -146,7 +148,8 @@
                             android:layout_marginEnd="@dimen/small_horizontal_margin"
                             android:inputType="numberDecimal"
                             android:maxLength="8"
-                            style="@style/Text"/>
+                            style="@style/Text"
+                            android:nextFocusDown="@+id/currentWeekText"/>
 
                     </android.support.design.widget.TextInputLayout>
 
