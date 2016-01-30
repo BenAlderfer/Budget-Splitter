@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "com.alderferstudios.budgetsplitter"
-        minSdkVersion 7
+        minSdkVersion 11
         targetSdkVersion 23
-        versionCode 8
-        versionName "1.7"
+        versionCode 18
+        versionName "2.2.2"
     }
     buildTypes {
         release {
@@ -22,6 +22,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:appcompat-v7:23.1.1+'
+    compile 'com.android.support:cardview-v7:21.0.+'
+    compile 'com.android.support:design:23.1.1+'
+    compile 'net.danlew:android.joda:2.9.1'
 }

@@ -40,4 +40,19 @@
 		<item name="android:buttonTint">@color/bluePrimary</item>
 	</style>
 
+	<!-- Calendar pop up theme -->
+	<style name="BlueLightPopUp" parent="Theme.AppCompat.Light.Dialog">
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+		<item name="colorPrimary">@color/bluePrimary</item>
+		<item name="colorPrimaryDark">@color/bluePrimaryDark</item>
+		<item name="colorAccent">@color/orangePrimary</item>
+		<item name="android:textColorPrimary">@color/white</item>
+		<!-- activity name text color -->
+		<item name="android:windowBackground">@color/bluePrimaryDark</item>
+		<!-- background color -->
+		<item name="android:textColorSecondary">@color/white</item>
+		<item name="android:textColor">@color/white</item>
+	</style>
+
 </resources>

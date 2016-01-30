@@ -1,24 +1,28 @@
 package com.alderferstudios.budgetsplitter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 
 import java.text.DecimalFormat;
 
@@ -31,11 +35,24 @@ import java.text.DecimalFormat;
 public class MainActivity extends AppCompatActivity {
 
     /**
-     * The number corresponding to the number of days
-     * Since the number is calculated at the end of the week,
-     * This number is how many days to add back
+     * The starting date
      */
-    private int day = 7; //monday by default
+    private int startYear, startMonth, startDay;
+
+    /**
+     * The ending date
+     */
+    private int endYear, endMonth, endDay;
+
+    /**
+     * week and day difference between dates
+     */
+    private int weekDiff, dayDiff, currentWeekDiff, currentDayDiff;
+
+    /**
+     * Results cards
+     */
+    private CardView initialCard, currentCard;
 
     /**
      * The results TextViews
@@ -56,14 +73,47 @@ public class MainActivity extends AppCompatActivity {
      * */
     private TextView[] tvs = new TextView[12];
 
-    /** The EditText fields */
-    private EditText initalBalanceEditText, numWeeksEditText, currentWeekEditText, currentBalanceEditText;
+    /**
+     * Start and end date TextViews
+     */
+    private TextView startDateText, endDateText;
 
-    /** The text input in the fields */
-    private String initalBalance, numWeeks, currentWeek, currentBalance;
+    /**
+     * The EditText fields
+     */
+    private EditText initalBalanceEditText, currentBalanceEditText, totalDaysOffEditText, currentDaysOffEditText;
 
-    /** Whether the fields have been entered */
-    private boolean initialBalanceIsEntered, numWeeksIsEntered, currentWeeksIsEntered, currentBalanceIsEntered;
+    /**
+     * The text input in the fields
+     */
+    private String initalBalance, currentBalance = "", totalDaysOff = "", currentDaysOff = "";
+
+    /**
+     * Whether the fields have been entered
+     */
+    private boolean initialBalanceIsEntered, currentBalanceIsEntered, currentDateIsInRange;
+
+    /**
+     * Either start or end date
+     */
+    private String dateBeingSet;
+
+    /**
+     * Context reference for later
+     */
+    private Context c;
+
+    /**
+     * Checks if the device is a tablet
+     *
+     * @param context the Context
+     * @return true if a tablet
+     */
+    private static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
 
     /**
      * Sets up the toolbar
@@ -76,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        JodaTimeAndroid.init(this);
+
+        c = this;
 
         if (!isTablet(this)) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
@@ -85,9 +138,11 @@ public class MainActivity extends AppCompatActivity {
         bar.setTitle(R.string.app_name);
 
         initalBalanceEditText = (EditText) findViewById(R.id.initialBalanceText);
-        numWeeksEditText = (EditText) findViewById(R.id.numWeeksText);
-        currentWeekEditText = (EditText) findViewById(R.id.currentWeekText);
         currentBalanceEditText = (EditText) findViewById(R.id.currentBalanceText);
+        startDateText = (TextView) findViewById(R.id.startDate);
+        endDateText = (TextView) findViewById(R.id.endDate);
+        totalDaysOffEditText = (EditText) findViewById(R.id.totalDaysOffText);
+        currentDaysOffEditText = (EditText) findViewById(R.id.currentDaysOffText);
 
         tvs[0] = (TextView) findViewById(R.id.initialHeader);
         tvs[1] = (TextView) findViewById(R.id.initDaily);
@@ -103,10 +158,21 @@ public class MainActivity extends AppCompatActivity {
         tvs[10] = (TextView) findViewById(R.id.currentWeekly);
         tvs[11] = (TextView) findViewById(R.id.currentWeeklyText);
 
-        clearResults();
+        initialCard = (CardView) findViewById(R.id.initialCard);
+        currentCard = (CardView) findViewById(R.id.currentCard);
 
+        clearResults();
         addTextListeners();
-        addButtonListeners();
+
+        startMonth = Integer.parseInt(getString(R.string.startMonth));
+        startDay = Integer.parseInt(getString(R.string.startDay));
+        startYear = Integer.parseInt(getString(R.string.startYear));
+        endMonth = Integer.parseInt(getString(R.string.endMonth));
+        endDay = Integer.parseInt(getString(R.string.endDay));
+        endYear = Integer.parseInt(getString(R.string.endYear));
+
+        startDateText.setText(startMonth + "/" + startDay + "/" + startYear);
+        endDateText.setText(endMonth + "/" + endDay + "/" + endYear);
     }
 
     /**
@@ -144,7 +210,8 @@ public class MainActivity extends AppCompatActivity {
     private void addTextListeners() {
         initalBalanceEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -154,68 +221,85 @@ public class MainActivity extends AppCompatActivity {
                     initalBalance = initalBalance.substring(0, initalBalance.length());
                 }
                 initialBalanceIsEntered = !initalBalance.equals("");
+
                 attemptUpdate();
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        numWeeksEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                numWeeks = numWeeksEditText.getText().toString();
-                numWeeksIsEntered = !numWeeks.equals("");
-                attemptUpdate();
+            public void afterTextChanged(Editable s) {
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
         });
 
         currentBalanceEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                currentBalance = currentBalanceEditText.getText().toString();
-                //if it ends with a "." remove the "." before getting the number
-                if (currentBalance.length() > 0 && currentBalance.substring(currentBalance.length() - 1, currentBalance.length()).equals(".")) {
-                    currentBalance = currentBalance.substring(0, currentBalance.length());
-                }
-                //if current balance > initial, fix that
-                if (!initalBalance.equals("") && !currentBalance.equals("") &&
-                    Double.parseDouble(currentBalance) > Double.parseDouble(initalBalance)) {
-                    currentBalance = initalBalance;
-                    currentBalanceEditText.setText(currentBalance);
-                }
-                currentBalanceIsEntered = !currentBalance.equals("");
-                attemptUpdate();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        currentWeekEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                currentWeek = currentWeekEditText.getText().toString();
-                //if current week > num weeks, fix that
-                if (!numWeeks.equals("") && !currentWeek.equals("") &&
-                        Integer.parseInt(currentWeek) > Integer.parseInt(numWeeks)) {
-                    currentWeek = numWeeks;
-                    currentWeekEditText.setText(currentWeek);
+                currentBalance = currentBalanceEditText.getText().toString();
+                currentBalanceIsEntered = !currentBalance.equals("");
+                if (currentBalanceIsEntered) {
+                    //if it ends with a "." remove the "." before getting the number
+                    if (currentBalance.length() > 0 && currentBalance.substring(currentBalance.length() - 1, currentBalance.length()).equals(".")) {
+                        currentBalance = currentBalance.substring(0, currentBalance.length());
+                    }
+                    //if current balance > initial, fix that
+                    if (!initalBalance.equals("") && !currentBalance.equals("") &&
+                            Double.parseDouble(currentBalance) > Double.parseDouble(initalBalance)) {
+                        currentBalance = initalBalance;
+                        currentBalanceEditText.setText(currentBalance);
+                        Toast.makeText(c, R.string.remainingGreaterThanInitial, Toast.LENGTH_LONG).show();
+                    }
                 }
-                currentWeeksIsEntered = !currentWeek.equals("");
+
+                attemptUpdate();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        totalDaysOffEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                totalDaysOff = totalDaysOffEditText.getText().toString();
+                attemptUpdate();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        currentDaysOffEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                currentDaysOff = currentDaysOffEditText.getText().toString();
+
+                //if total days off is blank and current days off is entered, change total to equal current
+                if (totalDaysOff.equals("") && !currentDaysOff.equals("")) {
+                    totalDaysOff = currentDaysOff;
+                    totalDaysOffEditText.setText(totalDaysOff);
+                    Toast.makeText(c, R.string.totalNotEntered, Toast.LENGTH_LONG).show();
+                }
+
+                // if current days off > total days off, change it to the total
+                if (!totalDaysOff.equals("") && !currentDaysOff.equals("") && Integer.parseInt(currentDaysOff) > Integer.parseInt(totalDaysOff)) {
+                    currentDaysOff = totalDaysOff;
+                    currentDaysOffEditText.setText(totalDaysOff);
+                    Toast.makeText(c, R.string.pastGreaterThanTotal, Toast.LENGTH_LONG).show();
+                }
+
                 attemptUpdate();
             }
 
@@ -226,49 +310,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Adds a listener to the radio group
-     * Updates the current day to the corresponding number
-     */
-    private void addButtonListeners() {
-        final RadioGroup  radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (radioGroup.getCheckedRadioButtonId()) {
-                    case R.id.mondayButton:
-                        day = 7;
-                        break;
-                    case R.id.tuesdayButton:
-                        day = 6;
-                        break;
-                    case R.id.wednesdayButton:
-                        day = 5;
-                        break;
-                    case R.id.thursdayButton:
-                        day = 4;
-                        break;
-                    case R.id.fridayButton:
-                        day = 3;
-                        break;
-                    case R.id.saturdayButton:
-                        day = 2;
-                        break;
-                    case R.id.sundayButton:
-                        day = 1;
-                        break;
-                }
-                attemptUpdate();
-            }
-        });
-    }
-
-    /**
      * Checks if results can be updated
      * If possible, update
      * If not, clear results
      */
     private void attemptUpdate() {
-        if (canUpdateResults()) {
+        if (initialBalanceIsEntered) {
             updateResults();
         } else {
             clearResults();
@@ -276,53 +323,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Checks if the results can be updated
-     * Only the first 2 are necessary
-     * @return true if the initial balance and number of weeks have been entered
-     */
-    private boolean canUpdateResults() {
-        return initialBalanceIsEntered && numWeeksIsEntered;
-    }
-
-    /**
      * Updates the results text
      */
     private void updateResults() {
-        /** Make the TextViews visible */
-        for (int i = 0; i <= 4; ++i) {
-            tvs[i].setVisibility(View.VISIBLE);
-        }
+        calculateDateDiff(findViewById(R.id.initialBalanceText));
+
+        initialCard.setVisibility(View.VISIBLE);
 
         DecimalFormat twoDecimal = new DecimalFormat("0.00");
         double initial = Double.parseDouble(initalBalance);
-        int weeks = Integer.parseInt(numWeeks);
 
-        double weekly = initial / weeks;
-        double daily = weekly / 7;
+        double daily, weekly;
+        if (weekDiff > 0) {
+            daily = initial / ((weekDiff * 7) + dayDiff);
+            weekly = daily * 7;
+        } else {    //only 1 week or less
+            weekly = initial;
+            daily = weekly / currentDayDiff;
+        }
 
         tvs[2].setText(twoDecimal.format(daily));
         tvs[4].setText(twoDecimal.format(weekly));
 
-        if (currentWeeksIsEntered && currentBalanceIsEntered) {
-            /** Make the TextViews visible */
-            for (int i = 5; i <= 11; ++i) {
-                tvs[i].setVisibility(View.VISIBLE);
-            }
+        if (currentDateIsInRange && currentBalanceIsEntered) {
+            currentCard.setVisibility(View.VISIBLE);
 
             double curBalance = Double.parseDouble(currentBalance);
-            int curWeeks = Integer.parseInt(currentWeek);
 
-            // current balance - amount that should be spent + number of remaining days in the week * daily rate
-            double diff = curBalance - (initial - weekly * curWeeks + day * daily);
+            // current balance - amount that should be left initially
+            double diff = curBalance - (weekly * currentWeekDiff + daily * currentDayDiff);
 
-            int weekDiff = weeks - curWeeks;
             double currentWeekly, currentDaily;
-            if (weekDiff > 0) {
-                currentWeekly = curBalance / (weekDiff + day / 7.0);
-                currentDaily = currentWeekly / 7;
-            } else {
+            if (currentWeekDiff > 0) {
+                currentDaily = curBalance / ((currentWeekDiff * 7) + currentDayDiff);
+                currentWeekly = currentDaily * 7;
+            } else {    //only 1 week or less
                 currentWeekly = curBalance;
-                currentDaily = currentWeekly / day;
+                currentDaily = currentWeekly / currentDayDiff;
             }
 
             if (diff > 0) {
@@ -333,6 +370,8 @@ public class MainActivity extends AppCompatActivity {
 
             tvs[9].setText(twoDecimal.format(currentDaily));
             tvs[11].setText(twoDecimal.format(currentWeekly));
+        } else { //if it can't be displayed, make sure its hidden
+            currentCard.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -341,20 +380,147 @@ public class MainActivity extends AppCompatActivity {
      * Makes all TextViews invisible
      */
     private void clearResults() {
-        for (int i = 0; i <= 11; ++i) {
-            tvs[i].setVisibility(View.INVISIBLE);
+        initialCard.setVisibility(View.INVISIBLE);
+        currentCard.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Sets the start date
+     */
+    public void setStartDate(View v) {
+        dateBeingSet = "start";
+        Intent popUp = new Intent(this, CalendarDialog.class);
+        startActivityForResult(popUp, 1);
+    }
+
+    /**
+     * Sets the end date
+     */
+    public void setEndDate(View v) {
+        dateBeingSet = "end";
+        Intent popUp = new Intent(this, CalendarDialog.class);
+        startActivityForResult(popUp, 1);
+    }
+
+    /**
+     * When the pop up returns a date
+     * Months are reported as 1 off so 1 added
+     *
+     * @param requestCode - useless
+     * @param resultCode  - useless
+     * @param data        - the Intent with the date
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_CANCELED) {    //only gets info if they didn't press back
+            if (dateBeingSet.equals("start")) {
+                startYear = data.getIntExtra("year", 2016);
+                startMonth = data.getIntExtra("month", 1) + 1;
+                startDay = data.getIntExtra("day", 25);
+                startDateText.setText(startMonth + "/" + startDay + "/" + startYear);
+                attemptUpdate();
+            } else {
+                endYear = data.getIntExtra("year", 2016);
+                endMonth = data.getIntExtra("month", 1) + 1;
+                endDay = data.getIntExtra("day", 25);
+                endDateText.setText(endMonth + "/" + endDay + "/" + endYear);
+                attemptUpdate();
+            }
         }
     }
 
     /**
-     * Checks if the device is a tablet
-     *
-     * @param context the Context
-     * @return true if a tablet
+     * Calculates the difference in the two dates
      */
-    private static boolean isTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    public void calculateDateDiff(View v) {
+        DateTimeZone Eastern = DateTimeZone.forID("America/New_York");
+        DateTime start = new DateTime(startYear, startMonth, startDay, 0, 0, 0, Eastern);
+        DateTime end = new DateTime(endYear, endMonth, endDay, 0, 0, 0, Eastern);
+        dayDiff = Days.daysBetween(start.toLocalDate(), end.toLocalDate()).getDays();
+
+        int totalDaysOffNumber = 0;
+        if (!totalDaysOff.equals("")) {
+            totalDaysOffNumber = Integer.parseInt(totalDaysOff);
+            dayDiff -= totalDaysOffNumber;
+        }
+
+        /**
+         * if end date is not at least 1 day after the start after removing days off
+         * change the end date to be 1 month after start + number of months in days off
+         */
+        if (dayDiff < 1) {
+            endYear = startYear;
+            endMonth = startMonth + 1 + (totalDaysOffNumber / 29);
+            if (endMonth > 12) {
+                endMonth -= 12;
+                ++endYear;
+            }
+
+            endDay = startDay;
+            endDateText.setText(endMonth + "/" + endDay + "/" + endYear);
+            Toast.makeText(this, R.string.endDateBeforeStart, Toast.LENGTH_LONG).show();
+            attemptUpdate();
+            return;
+        }
+
+        weekDiff = dayDiff / 7;
+        dayDiff -= weekDiff * 7;
+
+        LocalDate localDate = new LocalDate();
+        String currentDate = localDate.toString();
+        String currentYear = currentDate.substring(0, 4);
+        String currentMonth = currentDate.substring(5, 7);
+        String currentDay = currentDate.substring(8, 10);
+        int year = 0, month = 0, day = 0;
+        if (!currentYear.equals("")) {
+            year = Integer.parseInt(currentYear);
+        }
+        if (!currentMonth.equals("")) {
+            month = Integer.parseInt(currentMonth);
+        }
+        if (!currentDay.equals("")) {
+            day = Integer.parseInt(currentDay);
+        }
+
+        //check year
+        if (year <= endYear && year >= startYear) {
+            //check month
+            if (month <= endMonth && month >= startMonth) {
+                //if month not equal, no need to check day (default)
+                currentDateIsInRange = true;
+
+                //if a month is equal, check day
+                if (month == endMonth) {
+                    if (day > endDay) {
+                        currentDateIsInRange = false;
+                    }
+                } else if (month == startMonth) {
+                    if (day < startDay) {
+                        currentDateIsInRange = false;
+                    }
+                }
+            } else {
+                currentDateIsInRange = false;
+            }
+        } else {
+            currentDateIsInRange = false;
+        }
+
+        if (currentDateIsInRange) {
+            currentDayDiff = Days.daysBetween(localDate, end.toLocalDate()).getDays();
+
+            //subtract the total days off like before but add back any days that have passed
+            if (!totalDaysOff.equals("")) {
+                currentDayDiff -= Integer.parseInt(totalDaysOff);
+            }
+            if (!currentDaysOff.equals("")) {
+                currentDayDiff += Integer.parseInt(currentDaysOff);
+            }
+
+            currentWeekDiff = currentDayDiff / 7;
+            currentDayDiff -= currentWeekDiff * 7;
+        } else if (currentBalanceIsEntered) {
+            Toast.makeText(this, getString(R.string.dateOutOfRangeMessage), Toast.LENGTH_LONG).show();
+        }
     }
 }
