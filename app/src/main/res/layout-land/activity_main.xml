@@ -44,17 +44,18 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_vertical_margin"
+                        android:layout_marginTop="@dimen/activity_vertical_margin">
 
                         <TextView
                             android:id="@+id/balanceHeader"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                            android:layout_marginRight="@dimen/activity_horizontal_margin"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
-                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:layout_marginEnd="@dimen/small_horizontal_margin"
+                            android:layout_marginLeft="@dimen/small_horizontal_margin"
+                            android:layout_marginRight="@dimen/small_horizontal_margin"
+                            android:layout_marginStart="@dimen/small_horizontal_margin"
                             android:text="@string/balanceHeader"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/bluePrimary" />
@@ -64,7 +65,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/balanceHeader"
-                            android:layout_marginBottom="@dimen/activity_vertical_margin"
                             android:orientation="horizontal"
                             android:weightSum="2">
 
@@ -79,10 +79,10 @@
                                     android:id="@+id/initialBalanceText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                                    android:layout_marginEnd="@dimen/small_horizontal_margin"
+                                    android:layout_marginLeft="@dimen/small_horizontal_margin"
+                                    android:layout_marginRight="@dimen/small_horizontal_margin"
+                                    android:layout_marginStart="@dimen/small_horizontal_margin"
                                     android:hint="@string/initialBalance"
                                     android:inputType="numberDecimal"
                                     android:maxLength="8"
@@ -102,10 +102,10 @@
                                     android:id="@+id/currentBalanceText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                                    android:layout_marginEnd="@dimen/small_horizontal_margin"
+                                    android:layout_marginLeft="@dimen/small_horizontal_margin"
+                                    android:layout_marginRight="@dimen/small_horizontal_margin"
+                                    android:layout_marginStart="@dimen/small_horizontal_margin"
                                     android:hint="@string/currentBalance"
                                     android:imeOptions="actionDone"
                                     android:inputType="numberDecimal"
@@ -135,17 +135,18 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_vertical_margin"
+                        android:layout_marginTop="@dimen/activity_vertical_margin">
 
                         <TextView
                             android:id="@+id/dateHeader"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                            android:layout_marginRight="@dimen/activity_horizontal_margin"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
-                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:layout_marginEnd="@dimen/small_horizontal_margin"
+                            android:layout_marginLeft="@dimen/small_horizontal_margin"
+                            android:layout_marginRight="@dimen/small_horizontal_margin"
+                            android:layout_marginStart="@dimen/small_horizontal_margin"
                             android:text="@string/dateHeader"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/bluePrimary" />
@@ -155,7 +156,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/dateHeader"
-                            android:layout_marginBottom="@dimen/activity_vertical_margin"
+
                             android:layout_marginTop="@dimen/activity_vertical_margin"
                             android:orientation="horizontal"
                             android:weightSum="2">
@@ -211,17 +212,18 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_vertical_margin"
+                        android:layout_marginTop="@dimen/activity_vertical_margin">
 
                         <TextView
                             android:id="@+id/daysOffHeader"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                            android:layout_marginRight="@dimen/activity_horizontal_margin"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
-                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:layout_marginEnd="@dimen/small_horizontal_margin"
+                            android:layout_marginLeft="@dimen/small_horizontal_margin"
+                            android:layout_marginRight="@dimen/small_horizontal_margin"
+                            android:layout_marginStart="@dimen/small_horizontal_margin"
                             android:text="@string/daysOffHeader"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/bluePrimary" />
@@ -231,7 +233,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/daysOffHeader"
-                            android:layout_marginBottom="@dimen/activity_vertical_margin"
+
                             android:orientation="horizontal"
                             android:weightSum="2">
 
@@ -246,10 +248,10 @@
                                     android:id="@+id/totalDaysOffText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                                    android:layout_marginEnd="@dimen/small_horizontal_margin"
+                                    android:layout_marginLeft="@dimen/small_horizontal_margin"
+                                    android:layout_marginRight="@dimen/small_horizontal_margin"
+                                    android:layout_marginStart="@dimen/small_horizontal_margin"
                                     android:hint="@string/total"
                                     android:inputType="number"
                                     android:maxLength="3"
@@ -269,10 +271,10 @@
                                     android:id="@+id/currentDaysOffText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                                    android:layout_marginEnd="@dimen/small_horizontal_margin"
+                                    android:layout_marginLeft="@dimen/small_horizontal_margin"
+                                    android:layout_marginRight="@dimen/small_horizontal_margin"
+                                    android:layout_marginStart="@dimen/small_horizontal_margin"
                                     android:hint="@string/current"
                                     android:imeOptions="actionDone"
                                     android:inputType="number"
@@ -300,7 +302,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_horizontal_margin"
                 android:background="@drawable/blue_shape"
                 android:orientation="vertical">
 
@@ -322,14 +323,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/activity_vertical_margin"
-                        android:layout_marginTop="@dimen/activity_vertical_margin">
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:gravity="center">
 
                         <TextView
                             android:id="@+id/initialHeader"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginLeft="@dimen/small_horizontal_margin"
+                            android:layout_marginStart="@dimen/small_horizontal_margin"
                             android:text="@string/initialHeader"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/bluePrimary" />
@@ -339,8 +341,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/initialHeader"
-                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginLeft="@dimen/small_horizontal_margin"
+                            android:layout_marginStart="@dimen/small_horizontal_margin"
                             android:text="@string/daily"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/bluePrimary" />
@@ -362,8 +364,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/initDaily"
-                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginLeft="@dimen/small_horizontal_margin"
+                            android:layout_marginStart="@dimen/small_horizontal_margin"
                             android:text="@string/weekly"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/bluePrimary" />
@@ -404,14 +406,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/activity_vertical_margin"
-                        android:layout_marginTop="@dimen/activity_vertical_margin">
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:gravity="center">
 
                         <TextView
                             android:id="@+id/currentHeader"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginLeft="@dimen/small_horizontal_margin"
+                            android:layout_marginStart="@dimen/small_horizontal_margin"
                             android:text="@string/currentHeader"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/bluePrimary" />
@@ -421,8 +424,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/currentHeader"
-                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginLeft="@dimen/small_horizontal_margin"
+                            android:layout_marginStart="@dimen/small_horizontal_margin"
                             android:text="@string/difference"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/bluePrimary" />
@@ -444,8 +447,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/diff"
-                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginLeft="@dimen/small_horizontal_margin"
+                            android:layout_marginStart="@dimen/small_horizontal_margin"
                             android:text="@string/daily"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/bluePrimary" />
@@ -467,8 +470,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/currentDaily"
-                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginLeft="@dimen/small_horizontal_margin"
+                            android:layout_marginStart="@dimen/small_horizontal_margin"
                             android:text="@string/weekly"
                             android:textAppearance="?android:attr/textAppearanceMedium"
                             android:textColor="@color/bluePrimary" />

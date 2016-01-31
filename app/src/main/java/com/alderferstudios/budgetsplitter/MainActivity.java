@@ -57,21 +57,14 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The results TextViews
      *
-     * 0 - Initial Header
-     * 1 - Initial Daily Line Header
-     * 2 - Initial Daily
-     * 3 - Initial Weekly Line Header
-     * 4 - Initial Weekly
+     * 0 - Initial Daily
+     * 1 - Initial Weekly
      *
-     * 5 - Current Header
-     * 6 - Diff Line Header
-     * 7 - Diff
-     * 8 - Current Daily Line Header
-     * 9 - Current Daily
-     * 10 - Current Weekly Line Header
-     * 11 - Current Weekly
+     * 2 - Diff
+     * 3 - Current Daily
+     * 4 - Current Weekly
      * */
-    private TextView[] tvs = new TextView[12];
+    private TextView[] tvs = new TextView[5];
 
     /**
      * Start and end date TextViews
@@ -81,12 +74,12 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The EditText fields
      */
-    private EditText initalBalanceEditText, currentBalanceEditText, totalDaysOffEditText, currentDaysOffEditText;
+    private EditText initialBalanceEditText, currentBalanceEditText, totalDaysOffEditText, currentDaysOffEditText;
 
     /**
      * The text input in the fields
      */
-    private String initalBalance, currentBalance = "", totalDaysOff = "", currentDaysOff = "";
+    private String initialBalance = "", currentBalance = "", totalDaysOff = "", currentDaysOff = "";
 
     /**
      * Whether the fields have been entered
@@ -137,26 +130,19 @@ public class MainActivity extends AppCompatActivity {
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar);
         bar.setTitle(R.string.app_name);
 
-        initalBalanceEditText = (EditText) findViewById(R.id.initialBalanceText);
+        initialBalanceEditText = (EditText) findViewById(R.id.initialBalanceText);
         currentBalanceEditText = (EditText) findViewById(R.id.currentBalanceText);
         startDateText = (TextView) findViewById(R.id.startDate);
         endDateText = (TextView) findViewById(R.id.endDate);
         totalDaysOffEditText = (EditText) findViewById(R.id.totalDaysOffText);
         currentDaysOffEditText = (EditText) findViewById(R.id.currentDaysOffText);
 
-        tvs[0] = (TextView) findViewById(R.id.initialHeader);
-        tvs[1] = (TextView) findViewById(R.id.initDaily);
-        tvs[2] = (TextView) findViewById(R.id.initDailyText);
-        tvs[3] = (TextView) findViewById(R.id.initWeekly);
-        tvs[4] = (TextView) findViewById(R.id.initWeeklyText);
+        tvs[0] = (TextView) findViewById(R.id.initDailyText);
+        tvs[1] = (TextView) findViewById(R.id.initWeeklyText);
 
-        tvs[5] = (TextView) findViewById(R.id.currentHeader);
-        tvs[6] = (TextView) findViewById(R.id.diff);
-        tvs[7] = (TextView) findViewById(R.id.diffText);
-        tvs[8] = (TextView) findViewById(R.id.currentDaily);
-        tvs[9] = (TextView) findViewById(R.id.currentDailyText);
-        tvs[10] = (TextView) findViewById(R.id.currentWeekly);
-        tvs[11] = (TextView) findViewById(R.id.currentWeeklyText);
+        tvs[2] = (TextView) findViewById(R.id.diffText);
+        tvs[3] = (TextView) findViewById(R.id.currentDailyText);
+        tvs[4] = (TextView) findViewById(R.id.currentWeeklyText);
 
         initialCard = (CardView) findViewById(R.id.initialCard);
         currentCard = (CardView) findViewById(R.id.currentCard);
@@ -208,19 +194,19 @@ public class MainActivity extends AppCompatActivity {
      * Updates the results if possible
      */
     private void addTextListeners() {
-        initalBalanceEditText.addTextChangedListener(new TextWatcher() {
+        initialBalanceEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                initalBalance = initalBalanceEditText.getText().toString();
+                initialBalance = initialBalanceEditText.getText().toString();
                 //if it ends with a "." remove the "." before getting the number
-                if (initalBalance.length() > 0 && initalBalance.substring(initalBalance.length() - 1, initalBalance.length()).equals(".")) {
-                    initalBalance = initalBalance.substring(0, initalBalance.length());
+                if (initialBalance.length() > 0 && initialBalance.charAt(0) != '.' && initialBalance.substring(initialBalance.length() - 1, initialBalance.length()).equals(".")) {
+                    initialBalance = initialBalance.substring(0, initialBalance.length());
                 }
-                initialBalanceIsEntered = !initalBalance.equals("");
+                initialBalanceIsEntered = !initialBalance.equals("") && (initialBalance.length() > 1 || initialBalance.charAt(0) != '.');
 
                 attemptUpdate();
             }
@@ -238,16 +224,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 currentBalance = currentBalanceEditText.getText().toString();
-                currentBalanceIsEntered = !currentBalance.equals("");
+                currentBalanceIsEntered = !currentBalance.equals("") && (currentBalance.length() > 1 || currentBalance.charAt(0) != '.');
                 if (currentBalanceIsEntered) {
                     //if it ends with a "." remove the "." before getting the number
-                    if (currentBalance.length() > 0 && currentBalance.substring(currentBalance.length() - 1, currentBalance.length()).equals(".")) {
+                    if (currentBalance.length() > 0 && currentBalance.charAt(0) != '.' && currentBalance.substring(currentBalance.length() - 1, currentBalance.length()).equals(".")) {
                         currentBalance = currentBalance.substring(0, currentBalance.length());
                     }
                     //if current balance > initial, fix that
-                    if (!initalBalance.equals("") && !currentBalance.equals("") &&
-                            Double.parseDouble(currentBalance) > Double.parseDouble(initalBalance)) {
-                        currentBalance = initalBalance;
+                    if (!initialBalance.equals("") && !currentBalance.equals("") &&
+                            Double.parseDouble(currentBalance) > Double.parseDouble(initialBalance)) {
+                        currentBalance = initialBalance;
                         currentBalanceEditText.setText(currentBalance);
                         Toast.makeText(c, R.string.remainingGreaterThanInitial, Toast.LENGTH_LONG).show();
                     }
@@ -331,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
         initialCard.setVisibility(View.VISIBLE);
 
         DecimalFormat twoDecimal = new DecimalFormat("0.00");
-        double initial = Double.parseDouble(initalBalance);
+        double initial = Double.parseDouble(initialBalance);
 
         double daily, weekly;
         if (weekDiff > 0) {
@@ -342,8 +328,8 @@ public class MainActivity extends AppCompatActivity {
             daily = weekly / currentDayDiff;
         }
 
-        tvs[2].setText(twoDecimal.format(daily));
-        tvs[4].setText(twoDecimal.format(weekly));
+        tvs[0].setText(twoDecimal.format(daily));
+        tvs[1].setText(twoDecimal.format(weekly));
 
         if (currentDateIsInRange && currentBalanceIsEntered) {
             currentCard.setVisibility(View.VISIBLE);
@@ -363,13 +349,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (diff > 0) {
-                tvs[7].setText("+" + twoDecimal.format(diff));
+                tvs[2].setText("+" + twoDecimal.format(diff));
             } else {
-                tvs[7].setText(twoDecimal.format(diff));
+                tvs[2].setText(twoDecimal.format(diff));
             }
 
-            tvs[9].setText(twoDecimal.format(currentDaily));
-            tvs[11].setText(twoDecimal.format(currentWeekly));
+            tvs[3].setText(twoDecimal.format(currentDaily));
+            tvs[4].setText(twoDecimal.format(currentWeekly));
         } else { //if it can't be displayed, make sure its hidden
             currentCard.setVisibility(View.INVISIBLE);
         }
