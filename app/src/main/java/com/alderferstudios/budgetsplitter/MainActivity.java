@@ -303,16 +303,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private void saveValues() {
         //save entered values
-        if (initialBalanceIsEntered) {
+        if (initialBalanceIsEntered && !initialBalance.equals("")) {
             editor.putFloat("initialBalance", Float.parseFloat(initialBalance));
         }
-        if (currentBalanceIsEntered) {
+        if (currentBalanceIsEntered && !currentBalance.equals("")) {
             editor.putFloat("currentBalance", Float.parseFloat(currentBalance));
         }
-        if (totalDaysOffIsEntered) {
+        if (totalDaysOffIsEntered && !totalDaysOff.equals("")) {
             editor.putInt("totalDaysOff", Integer.parseInt(totalDaysOff));
         }
-        if (pastDaysOffIsEntered) {
+        if (pastDaysOffIsEntered && !pastDaysOff.equals("")) {
             editor.putInt("pastDaysOff", Integer.parseInt(pastDaysOff));
         }
 

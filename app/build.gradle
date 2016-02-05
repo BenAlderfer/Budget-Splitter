@@ -8,8 +8,8 @@ android {
         applicationId "com.alderferstudios.budgetsplitter"
         minSdkVersion 11
         targetSdkVersion 23
-        versionCode 27
-        versionName "2.4.4"
+        versionCode 28
+        versionName "2.4.5"
     }
     buildTypes {
         release {
