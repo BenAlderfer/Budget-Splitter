@@ -2,9 +2,11 @@ package com.alderferstudios.budgetsplitter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -35,25 +37,26 @@ import java.text.DecimalFormat;
 public class MainActivity extends AppCompatActivity {
 
     /**
+     * SharedPreferences objects for saving values
+     */
+    protected static SharedPreferences shared;
+    protected static SharedPreferences.Editor editor;
+    /**
      * The starting date
      */
     private int startYear, startMonth, startDay;
-
     /**
      * The ending date
      */
     private int endYear, endMonth, endDay;
-
     /**
      * week and day difference between dates
      */
     private int weekDiff, dayDiff, currentWeekDiff, currentDayDiff;
-
     /**
      * Results cards
      */
     private CardView initialCard, currentCard;
-
     /**
      * The results TextViews
      *
@@ -65,32 +68,26 @@ public class MainActivity extends AppCompatActivity {
      * 4 - Current Weekly
      * */
     private TextView[] tvs = new TextView[5];
-
     /**
      * Start and end date TextViews
      */
     private TextView startDateText, endDateText;
-
     /**
      * The EditText fields
      */
-    private EditText initialBalanceEditText, currentBalanceEditText, totalDaysOffEditText, currentDaysOffEditText;
-
+    private EditText initialBalanceEditText, currentBalanceEditText, totalDaysOffEditText, pastDaysOffEditText;
     /**
      * The text input in the fields
      */
-    private String initialBalance = "", currentBalance = "", totalDaysOff = "", currentDaysOff = "";
-
+    private String initialBalance = "", currentBalance = "", totalDaysOff = "", pastDaysOff = "";
     /**
      * Whether the fields have been entered
      */
-    private boolean initialBalanceIsEntered, currentBalanceIsEntered, currentDateIsInRange;
-
+    private boolean initialBalanceIsEntered, currentBalanceIsEntered, currentDateIsInRange, totalDaysOffIsEntered, pastDaysOffIsEntered;
     /**
      * Either start or end date
      */
     private String dateBeingSet;
-
     /**
      * Context reference for later
      */
@@ -127,15 +124,18 @@ public class MainActivity extends AppCompatActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
         }
 
-        Toolbar bar = (Toolbar) findViewById(R.id.toolbar);
-        bar.setTitle(R.string.app_name);
+        shared = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = shared.edit();
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         initialBalanceEditText = (EditText) findViewById(R.id.initialBalanceText);
         currentBalanceEditText = (EditText) findViewById(R.id.currentBalanceText);
         startDateText = (TextView) findViewById(R.id.startDate);
         endDateText = (TextView) findViewById(R.id.endDate);
         totalDaysOffEditText = (EditText) findViewById(R.id.totalDaysOffText);
-        currentDaysOffEditText = (EditText) findViewById(R.id.currentDaysOffText);
+        pastDaysOffEditText = (EditText) findViewById(R.id.pastDaysOffText);
 
         tvs[0] = (TextView) findViewById(R.id.initDailyText);
         tvs[1] = (TextView) findViewById(R.id.initWeeklyText);
@@ -150,15 +150,17 @@ public class MainActivity extends AppCompatActivity {
         clearResults();
         addTextListeners();
 
-        startMonth = Integer.parseInt(getString(R.string.startMonth));
-        startDay = Integer.parseInt(getString(R.string.startDay));
-        startYear = Integer.parseInt(getString(R.string.startYear));
-        endMonth = Integer.parseInt(getString(R.string.endMonth));
-        endDay = Integer.parseInt(getString(R.string.endDay));
-        endYear = Integer.parseInt(getString(R.string.endYear));
+        restoreValues();
+    }
 
-        startDateText.setText(startMonth + "/" + startDay + "/" + startYear);
-        endDateText.setText(endMonth + "/" + endDay + "/" + endYear);
+    /**
+     * Check to restore values on resume also
+     * since it could be changed in the settings
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        restoreValues();
     }
 
     /**
@@ -179,12 +181,12 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent settingsActivity = new Intent(this, SettingsActivity.class);
+                startActivity(settingsActivity);
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -255,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 totalDaysOff = totalDaysOffEditText.getText().toString();
+                totalDaysOffIsEntered = true;
                 attemptUpdate();
             }
 
@@ -263,26 +266,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        currentDaysOffEditText.addTextChangedListener(new TextWatcher() {
+        pastDaysOffEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                currentDaysOff = currentDaysOffEditText.getText().toString();
+                pastDaysOff = pastDaysOffEditText.getText().toString();
 
                 //if total days off is blank and current days off is entered, change total to equal current
-                if (totalDaysOff.equals("") && !currentDaysOff.equals("")) {
-                    totalDaysOff = currentDaysOff;
+                if (totalDaysOff.equals("") && !pastDaysOff.equals("")) {
+                    totalDaysOff = pastDaysOff;
                     totalDaysOffEditText.setText(totalDaysOff);
                     Toast.makeText(c, R.string.totalNotEntered, Toast.LENGTH_LONG).show();
                 }
 
                 // if current days off > total days off, change it to the total
-                if (!totalDaysOff.equals("") && !currentDaysOff.equals("") && Integer.parseInt(currentDaysOff) > Integer.parseInt(totalDaysOff)) {
-                    currentDaysOff = totalDaysOff;
-                    currentDaysOffEditText.setText(totalDaysOff);
+                if (!totalDaysOff.equals("") && !pastDaysOff.equals("") && Integer.parseInt(pastDaysOff) > Integer.parseInt(totalDaysOff)) {
+                    pastDaysOff = totalDaysOff;
+                    pastDaysOffEditText.setText(totalDaysOff);
                     Toast.makeText(c, R.string.pastGreaterThanTotal, Toast.LENGTH_LONG).show();
                 }
 
@@ -293,6 +296,93 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+    }
+
+    /**
+     * Saves the entered values for later
+     */
+    private void saveValues() {
+        //save entered values
+        if (initialBalanceIsEntered) {
+            editor.putFloat("initialBalance", Float.parseFloat(initialBalance));
+        }
+        if (currentBalanceIsEntered) {
+            editor.putFloat("currentBalance", Float.parseFloat(currentBalance));
+        }
+        if (totalDaysOffIsEntered) {
+            editor.putInt("totalDaysOff", Integer.parseInt(totalDaysOff));
+        }
+        if (pastDaysOffIsEntered) {
+            editor.putInt("pastDaysOff", Integer.parseInt(pastDaysOff));
+        }
+
+        //save start date
+        editor.putInt("startMonth", startMonth);
+        editor.putInt("startDay", startDay);
+        editor.putInt("startYear", startYear);
+
+        //save end date
+        editor.putInt("endMonth", endMonth);
+        editor.putInt("endDay", endDay);
+        editor.putInt("endYear", endYear);
+
+        editor.commit();
+    }
+
+    /**
+     * Restores the previous values
+     */
+    private void restoreValues() {
+        //only restore values if they want to
+        if (shared.getBoolean("saveBox", false)) {
+            //restore start date
+            startMonth = shared.getInt("startMonth", Integer.parseInt(getString(R.string.startMonth)));
+            startDay = shared.getInt("startDay", Integer.parseInt(getString(R.string.startDay)));
+            startYear = shared.getInt("startYear", Integer.parseInt(getString(R.string.startYear)));
+
+            //restore end date
+            endMonth = shared.getInt("endMonth", Integer.parseInt(getString(R.string.endMonth)));
+            endDay = shared.getInt("endDay", Integer.parseInt(getString(R.string.endDay)));
+            endYear = shared.getInt("endYear", Integer.parseInt(getString(R.string.endYear)));
+
+            //update date field texts
+            startDateText.setText(startMonth + "/" + startDay + "/" + startYear);
+            endDateText.setText(endMonth + "/" + endDay + "/" + endYear);
+
+            //restore entered values
+            float initial = shared.getFloat("initialBalance", 0.0f);
+            if (initial != 0.0f) {
+                initialBalance = initial + "";
+                initialBalanceEditText.setText(initialBalance);
+            }
+
+            float current = shared.getFloat("currentBalance", 0.0f);
+            if (current != 0.0f) {
+                currentBalance = current + "";
+                currentBalanceEditText.setText(currentBalance);
+            }
+
+            int totalDays = shared.getInt("totalDaysOff", 0);
+            if (totalDays != 0) {
+                totalDaysOff = totalDays + "";
+                totalDaysOffEditText.setText(totalDaysOff);
+            }
+
+            int pastDays = shared.getInt("pastDaysOff", 0);
+            if (pastDays != 0) {
+                pastDaysOff = pastDays + "";
+                pastDaysOffEditText.setText(pastDaysOff);
+            }
+        } else {    //dates must be initialized and fields cleared
+            startMonth = Integer.parseInt(getResources().getString(R.string.startMonth));
+            startDay = Integer.parseInt(getResources().getString(R.string.startDay));
+            startYear = Integer.parseInt(getResources().getString(R.string.startYear));
+            endMonth = Integer.parseInt(getResources().getString(R.string.endMonth));
+            endDay = Integer.parseInt(getResources().getString(R.string.endDay));
+            endYear = Integer.parseInt(getResources().getString(R.string.endYear));
+
+            clearFields();
+        }
     }
 
     /**
@@ -313,6 +403,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void updateResults() {
         calculateDateDiff(findViewById(R.id.initialBalanceText));
+        saveValues();
 
         initialCard.setVisibility(View.VISIBLE);
 
@@ -371,11 +462,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Clears all user input fields
+     * Note - only clears fields, not any saved data
+     */
+    private void clearFields() {
+        initialBalanceEditText.setText("");
+        currentBalanceEditText.setText("");
+        totalDaysOffEditText.setText("");
+        pastDaysOffEditText.setText("");
+        initialBalanceIsEntered = false;
+        currentBalanceIsEntered = false;
+        totalDaysOffIsEntered = false;
+        pastDaysOffIsEntered = false;
+
+        //this will be called after restoring default dates
+        startDateText.setText(startMonth + "/" + startDay + "/" + startYear);
+        endDateText.setText(endMonth + "/" + endDay + "/" + endYear);
+    }
+
+    /**
      * Sets the start date
      */
     public void setStartDate(View v) {
         dateBeingSet = "start";
         Intent popUp = new Intent(this, CalendarDialog.class);
+        popUp.putExtra("month", startMonth);
+        popUp.putExtra("day", startDay);
+        popUp.putExtra("year", startYear);
         startActivityForResult(popUp, 1);
     }
 
@@ -385,6 +498,9 @@ public class MainActivity extends AppCompatActivity {
     public void setEndDate(View v) {
         dateBeingSet = "end";
         Intent popUp = new Intent(this, CalendarDialog.class);
+        popUp.putExtra("month", endMonth);
+        popUp.putExtra("day", endDay);
+        popUp.putExtra("year", endYear);
         startActivityForResult(popUp, 1);
     }
 
@@ -457,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
         String currentYear = currentDate.substring(0, 4);
         String currentMonth = currentDate.substring(5, 7);
         String currentDay = currentDate.substring(8, 10);
-        int year = 0, month = 0, day = 0;
+        int year = 2016, month = 1, day = 25;
         if (!currentYear.equals("")) {
             year = Integer.parseInt(currentYear);
         }
@@ -499,8 +615,8 @@ public class MainActivity extends AppCompatActivity {
             if (!totalDaysOff.equals("")) {
                 currentDayDiff -= Integer.parseInt(totalDaysOff);
             }
-            if (!currentDaysOff.equals("")) {
-                currentDayDiff += Integer.parseInt(currentDaysOff);
+            if (!pastDaysOff.equals("")) {
+                currentDayDiff += Integer.parseInt(pastDaysOff);
             }
 
             currentWeekDiff = currentDayDiff / 7;

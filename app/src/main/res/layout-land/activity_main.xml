@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
-        android:theme="@style/BlueLight" />
+        android:theme="@style/BlueToolbar" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -255,7 +255,7 @@
                                     android:hint="@string/total"
                                     android:inputType="number"
                                     android:maxLength="3"
-                                    android:nextFocusDown="@+id/currentDaysOffText"
+                                    android:nextFocusDown="@+id/pastDaysOffText"
                                     android:textColor="@color/bluePrimary" />
 
                             </android.support.design.widget.TextInputLayout>
@@ -268,14 +268,14 @@
                                 android:theme="@style/TextLabel">
 
                                 <android.support.v7.widget.AppCompatEditText
-                                    android:id="@+id/currentDaysOffText"
+                                    android:id="@+id/pastDaysOffText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="@dimen/small_horizontal_margin"
                                     android:layout_marginLeft="@dimen/small_horizontal_margin"
                                     android:layout_marginRight="@dimen/small_horizontal_margin"
                                     android:layout_marginStart="@dimen/small_horizontal_margin"
-                                    android:hint="@string/current"
+                                    android:hint="@string/past"
                                     android:imeOptions="actionDone"
                                     android:inputType="number"
                                     android:maxLength="3"

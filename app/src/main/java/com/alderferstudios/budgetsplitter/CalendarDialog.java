@@ -26,6 +26,11 @@ public class CalendarDialog extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar_dialog);
         calendar = (DatePicker) findViewById(R.id.calendar);
+        int month = getIntent().getIntExtra("month", 3);
+        int day = getIntent().getIntExtra("day", 1);
+        int year = getIntent().getIntExtra("year", 2016);
+        //remove 1 from month since java 7 dates start at 0 and jodatime starts at 1
+        calendar.updateDate(year, month - 1, day);
     }
 
     /**
