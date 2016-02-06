@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
      * @param context the Context
      * @return true if a tablet
      */
-    private static boolean isTablet(Context context) {
+    protected static boolean isTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
