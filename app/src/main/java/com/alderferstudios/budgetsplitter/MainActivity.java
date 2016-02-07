@@ -402,6 +402,7 @@ public class MainActivity extends AppCompatActivity {
      * Updates the results text
      */
     private void updateResults() {
+        //feed it a useless view since an onClick method needs a view
         calculateDateDiff(findViewById(R.id.initialBalanceText));
         saveValues();
 
@@ -539,6 +540,7 @@ public class MainActivity extends AppCompatActivity {
         DateTime start = new DateTime(startYear, startMonth, startDay, 0, 0, 0, Eastern);
         DateTime end = new DateTime(endYear, endMonth, endDay, 0, 0, 0, Eastern);
         dayDiff = Days.daysBetween(start.toLocalDate(), end.toLocalDate()).getDays();
+        ++dayDiff;  //increment dayDiff by 1 so the end date is included
 
         int totalDaysOffNumber = 0;
         if (!totalDaysOff.equals("")) {
