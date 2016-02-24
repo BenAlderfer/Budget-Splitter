@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -17,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -44,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The starting date
      */
-    private int startYear, startMonth, startDay;
+    private int startYear = 2016, startMonth = 1, startDay = 1;
     /**
      * The ending date
      */
-    private int endYear, endMonth, endDay;
+    private int endYear = 2016, endMonth = 2, endDay = 2;
     /**
      * week and day difference between dates
      */
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Whether the fields have been entered
      */
-    private boolean initialBalanceIsEntered, currentBalanceIsEntered, currentDateIsInRange, totalDaysOffIsEntered, pastDaysOffIsEntered;
+    private boolean initialBalanceIsEntered, currentBalanceIsEntered, currentDateIsInRange, totalDaysOffIsEntered, pastDaysOffIsEntered, isEnteringDate;
     /**
      * Either start or end date
      */
@@ -149,18 +149,29 @@ public class MainActivity extends AppCompatActivity {
 
         clearResults();
         addTextListeners();
-
-        restoreValues();
     }
 
     /**
-     * Check to restore values on resume also
-     * since it could be changed in the settings
+     * Restore values when the app resumes
+     * Do not change anything if they are just resuming from a date picker
      */
     @Override
     protected void onResume() {
         super.onResume();
-        restoreValues();
+        if (!isEnteringDate) {
+            restoreValues();
+        } else {
+            isEnteringDate = false;
+        }
+    }
+
+    /**
+     * Save entered values when app pauses
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveValues();
     }
 
     /**
@@ -185,6 +196,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 Intent settingsActivity = new Intent(this, SettingsActivity.class);
                 startActivity(settingsActivity);
+                return true;
+            case R.id.help:
+                Intent helpActivity = new Intent(this, HelpActivity.class);
+                startActivity(helpActivity);
+                return true;
+            case R.id.about:
+                Intent aboutActivity = new Intent(this, AboutActivity.class);
+                startActivity(aboutActivity);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -237,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
                             Double.parseDouble(currentBalance) > Double.parseDouble(initialBalance)) {
                         currentBalance = initialBalance;
                         currentBalanceEditText.setText(currentBalance);
-                        Toast.makeText(c, R.string.remainingGreaterThanInitial, Toast.LENGTH_LONG).show();
+                        Snackbar.make(findViewById(R.id.display), R.string.remainingGreaterThanInitial, Snackbar.LENGTH_LONG).show();
                     }
                 }
 
@@ -279,14 +298,14 @@ public class MainActivity extends AppCompatActivity {
                 if (totalDaysOff.equals("") && !pastDaysOff.equals("")) {
                     totalDaysOff = pastDaysOff;
                     totalDaysOffEditText.setText(totalDaysOff);
-                    Toast.makeText(c, R.string.totalNotEntered, Toast.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.display), R.string.totalNotEntered, Snackbar.LENGTH_LONG).show();
                 }
 
                 // if current days off > total days off, change it to the total
                 if (!totalDaysOff.equals("") && !pastDaysOff.equals("") && Integer.parseInt(pastDaysOff) > Integer.parseInt(totalDaysOff)) {
                     pastDaysOff = totalDaysOff;
                     pastDaysOffEditText.setText(totalDaysOff);
-                    Toast.makeText(c, R.string.pastGreaterThanTotal, Toast.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(R.id.display), R.string.pastGreaterThanTotal, Snackbar.LENGTH_LONG).show();
                 }
 
                 attemptUpdate();
@@ -515,6 +534,9 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //flag to prevent the default values from being applied when resuming from date picker
+        isEnteringDate = true;
+
         if (resultCode != RESULT_CANCELED) {    //only gets info if they didn't press back
             if (dateBeingSet.equals("start")) {
                 startYear = data.getIntExtra("year", 2016);
@@ -562,7 +584,7 @@ public class MainActivity extends AppCompatActivity {
 
             endDay = startDay;
             endDateText.setText(endMonth + "/" + endDay + "/" + endYear);
-            Toast.makeText(this, R.string.endDateBeforeStart, Toast.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.display), R.string.endDateBeforeStart, Snackbar.LENGTH_LONG).show();
             attemptUpdate();
             return;
         }
@@ -624,7 +646,7 @@ public class MainActivity extends AppCompatActivity {
             currentWeekDiff = currentDayDiff / 7;
             currentDayDiff -= currentWeekDiff * 7;
         } else if (currentBalanceIsEntered) {
-            Toast.makeText(this, getString(R.string.dateOutOfRangeMessage), Toast.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.display), R.string.dateOutOfRangeMessage, Snackbar.LENGTH_LONG).show();
         }
     }
 }
