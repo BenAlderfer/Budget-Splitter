@@ -126,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
 
         shared = PreferenceManager.getDefaultSharedPreferences(this);
         editor = shared.edit();
+        //set the default value for the preferences
+        PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -371,14 +373,12 @@ public class MainActivity extends AppCompatActivity {
             //restore entered values
             float initial = shared.getFloat("initialBalance", 0.0f);
             if (initial != 0.0f) {
-                initialBalance = initial + "";
-                initialBalanceEditText.setText(initialBalance);
+                initialBalanceEditText.setText(String.format("%.02f", initial));
             }
 
             float current = shared.getFloat("currentBalance", 0.0f);
             if (current != 0.0f) {
-                currentBalance = current + "";
-                currentBalanceEditText.setText(currentBalance);
+                currentBalanceEditText.setText(String.format("%.02f", current));
             }
 
             int totalDays = shared.getInt("totalDaysOff", 0);
@@ -423,7 +423,6 @@ public class MainActivity extends AppCompatActivity {
     private void updateResults() {
         //feed it a useless view since an onClick method needs a view
         calculateDateDiff(findViewById(R.id.initialBalanceText));
-        saveValues();
 
         initialCard.setVisibility(View.VISIBLE);
 
@@ -577,7 +576,7 @@ public class MainActivity extends AppCompatActivity {
         if (dayDiff < 1) {
             endYear = startYear;
             endMonth = startMonth + 1 + (totalDaysOffNumber / 29);
-            if (endMonth > 12) {
+            while (endMonth > 12) {
                 endMonth -= 12;
                 ++endYear;
             }
